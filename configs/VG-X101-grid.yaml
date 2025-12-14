@@ -1,0 +1,31 @@
+_BASE_: "/home/user/miniconda3/envs/dlct/lib/python3.11/site-packages/detectron2/model_zoo/configs/Base-RCNN-C4.yaml"
+MODEL:
+  META_ARCHITECTURE: "GeneralizedRCNN"
+  BACKBONE:
+    NAME: "build_resnet_backbone"
+  RESNETS:
+    DEPTH: 101
+    STRIDE_IN_1X1: False
+    NUM_GROUPS: 32        # 32x8d
+    WIDTH_PER_GROUP: 8    # 32x8d
+    OUT_FEATURES: ["res5"] # Backbone includes Res5
+  RPN:
+    IN_FEATURES: ["res5"]
+    PRE_NMS_TOPK_TEST: 6000
+    POST_NMS_TOPK_TEST: 1000
+  ROI_HEADS:
+    NAME: "StandardROIHeads" # Use Standard to accept res5 input directly
+    IN_FEATURES: ["res5"]
+    NUM_CLASSES: 1600
+    SCORE_THRESH_TEST: 0.2
+  ROI_BOX_HEAD:
+    NAME: "FastRCNNConvFCHead"
+    NUM_FC: 2
+    FC_DIM: 1024
+    POOLER_RESOLUTION: 1 # GAP on 2048-d features
+    POOLER_TYPE: "ROIAlignV2"
+INPUT:
+  MIN_SIZE_TEST: 600
+  MAX_SIZE_TEST: 1000
+  FORMAT: "BGR"
+VERSION: 2
